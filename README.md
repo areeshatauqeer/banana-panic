@@ -1,163 +1,72 @@
-# Cute 2D Platformer Game
+Project Title: Carrot Chase – 2D Infinite Runner Game
+1. Project Overview
 
-A delightful 2D platformer game built with C++ and SFML 2.6.2, featuring cute characters, colorful graphics, and smooth gameplay similar to Minion Rush.
+Carrot Chase is a 2D infinite runner game developed using C++ and the SFML library. The objective of the project was to apply Object-Oriented Programming (OOP) principles to create a scalable and modular game engine.
++3
 
-## Features
+In the game, the player controls a bunny character that runs automatically through an infinitely generated world. The player must jump, slide, and avoid obstacles while collecting items like carrots, coins, and mushrooms to increase their score. The game features dynamic platform generation, ensuring that no two runs are exactly the same.
++4
 
-- **Cute Art Style**: Round characters, big expressive eyes, soft colors, and playful animations
-- **Player Movement**: Running, jumping, sliding, and death animations
-- **Enemies**: Moving obstacles with collision detection
-- **Collectibles**: Hearts, stars, candies, and coins to collect
-- **Parallax Background**: Multi-layer scrolling background for depth
-- **Game States**: Menu, Playing, Pause, and Game Over screens
-- **HUD**: Score display with smooth animations
-- **Sound Effects**: Jump, slide, collect, enemy hit, and background music
+2. Technical Architecture & OOP Implementation
+The project heavily utilizes OOP concepts to ensure code reusability and modularity:
++1
 
-## Requirements
+Encapsulation: Major systems (Player, Platform, Animation) are separated into distinct classes. For example, the Player class manages its own velocity and state, protecting internal data from external modification.
++1
 
-- **SFML 2.6.2**: Download from [SFML website](https://www.sfml-dev.org/download.php)
-- **Visual Studio 2026**: 64-bit development environment
-- **C++17** or later
+Inheritance: We implemented a base Entity class, which the Collectible class inherits from. This allows different items (carrots, coins) to share common attributes like position and collision logic while extending specific behaviors.
 
-## Setup Instructions
+Polymorphism: The game loop treats all collectibles as generic Entity objects. When a collision occurs, the specific onCollect() function triggers different effects (e.g., adding score vs. activating a combo) depending on the object type.
++2
 
-### 1. Install SFML
 
-1. Download SFML 2.6.2 for Visual Studio 2026 (64-bit)
-2. Extract to a location (e.g., `C:\SFML`)
-3. Set the `SFML_DIR` environment variable to point to the SFML directory, or configure it in Visual Studio project properties
+State Design Pattern: The game utilizes a Stack-based State Machine to manage transitions between MenuState, PlayingState, PauseState, and GameOverState.
 
-### 2. Configure Visual Studio Project
+3. My Technical Contributions (Lead Gameplay Logic & UI)
 
-1. Open `PlatformerGame.vcxproj` in Visual Studio 2026
-2. Go to Project Properties → C/C++ → General
-3. Add `$(SFML_DIR)\include` to Additional Include Directories
-4. Go to Linker → General
-5. Add `$(SFML_DIR)\lib` to Additional Library Directories
-6. Or set `SFML_DIR` environment variable to your SFML installation path
+Role: Gameplay Mechanics, UI, and Game Logic.
 
-### 3. Asset Structure
+As the team member responsible for the core mechanics and user interface, my specific contributions included:
 
-Create the following folder structure and add your assets:
+A. Core Gameplay Mechanics
 
-```
-assets/
-├── sprites/
-│   ├── player_idle.png
-│   ├── player_run.png
-│   ├── player_jump.png
-│   ├── player_slide.png
-│   ├── player_death.png
-│   ├── enemy.png
-│   ├── collectible_heart.png
-│   ├── collectible_star.png
-│   ├── collectible_candy.png
-│   ├── collectible_coin.png
-│   └── platform.png
-├── backgrounds/
-│   ├── bg_layer0.png (far background - sky/clouds)
-│   ├── bg_layer1.png (mid background - mountains/buildings)
-│   └── bg_layer2.png (near background - trees/decorations)
-├── sounds/
-│   ├── jump.ogg
-│   ├── slide.ogg
-│   ├── collect.ogg
-│   ├── enemy_hit.ogg
-│   ├── death.ogg
-│   └── bg_music.ogg
-└── fonts/
-    └── default.ttf (cute, playful font)
-```
 
-### 4. Asset Specifications
+Auto-Run Logic: I refactored the player movement to remove manual left/right controls, enforcing constant forward momentum to strictly emulate the "Endless Runner" genre.
++1
 
-#### Player Sprites
-- **Idle**: 4 frames, 64x64 pixels each
-- **Run**: 6 frames, 64x64 pixels each
-- **Jump**: 3 frames, 64x64 pixels each
-- **Slide**: 4 frames, 64x64 pixels each
-- **Death**: 5 frames, 64x64 pixels each
+Health & Damage System: I transitioned the game from a "One-Hit-Death" mechanic to a 3-Life System (represented by sun icons). This allows players to recover from mistakes, ending the game only when all lives are lost.
++1
 
-#### Enemy Sprites
-- **Walk**: 4 frames, 64x64 pixels each
 
-#### Collectibles
-- **All types**: 4 frames, 32x32 pixels each
+Directional Locking: Implemented logic to lock the player's facing direction, preventing sprite flipping errors during collisions to ensure visual consistency.
 
-#### Backgrounds
-- **Width**: At least 1280 pixels (wider for seamless scrolling)
-- **Height**: 720 pixels
-- **Format**: PNG with transparency where needed
+B. Physics & Collision Engineering
 
-#### Sounds
-- **Format**: OGG Vorbis (recommended) or WAV
-- **Sample Rate**: 44100 Hz recommended
 
-### 5. Build and Run
+Collision Resolution: I fixed AABB collision detection issues to prevent the player from falling through platforms.
 
-1. Build the project in Visual Studio (Debug or Release)
-2. Copy SFML DLLs to the output directory:
-   - `sfml-graphics-d-2.dll` (Debug) or `sfml-graphics-2.dll` (Release)
-   - `sfml-window-d-2.dll` (Debug) or `sfml-window-2.dll` (Release)
-   - `sfml-system-d-2.dll` (Debug) or `sfml-system-2.dll` (Release)
-   - `sfml-audio-d-2.dll` (Debug) or `sfml-audio-2.dll` (Release)
-3. Ensure all assets are in the `assets/` folder relative to the executable
-4. Run the game!
 
-## Controls
+"Snap-to-Surface" Algorithm: To solve the issue of the player "jittering" or vibrating when standing on moving platforms, I implemented a snap-to-surface logic that aligns the player's Y-position perfectly with the platform top.
 
-- **SPACE / UP / W**: Jump
-- **DOWN / S**: Slide
-- **P / ESC**: Pause (in-game)
-- **ESC**: Exit (in menu)
+C. UI & State Management
 
-## Gameplay
 
-- Run automatically and avoid enemies
-- Jump over obstacles and enemies
-- Slide under low obstacles and defeat enemies
-- Collect items to increase your score
-- Try to survive as long as possible!
+State Machine: I designed and implemented the State Design Pattern, creating the MenuState, PauseState, and GameOverState classes to handle smooth scene transitions.
 
-## Customization
 
-### Adjusting Game Speed
-Edit `gameSpeed_` in `PlayingState.cpp` to change the overall game speed.
+Dynamic HUD: I built the Heads-Up Display (HUD) to show real-time scores and health indicators that dynamically update or fade when damage is taken.
 
-### Changing Physics
-Modify values in `Player.cpp`:
-- `gravity_`: Fall speed
-- `jumpStrength_`: Jump height
-- `runSpeed_`: Horizontal movement speed
 
-### Spawn Rates
-Adjust in `PlayingState.cpp`:
-- `spawnTimer_` threshold: Enemy spawn frequency
-- `collectibleTimer_` threshold: Collectible spawn frequency
+Audio Integration: I integrated the audio system, adding sound effects for jumping, taking damage, and collecting items to provide immediate feedback to the player.
 
-## Troubleshooting
+4. Tools Used
 
-### Missing DLLs
-If you get DLL errors, copy the required SFML DLLs to your executable directory.
+Language: C++ 
 
-### Assets Not Loading
-- Check that asset paths are correct relative to the executable
-- Ensure file names match exactly (case-sensitive on some systems)
-- Verify file formats are supported (PNG for images, OGG/WAV for sounds)
 
-### Font Issues
-If the font doesn't load, the game will still run but text may not display. Make sure `default.ttf` exists in `assets/fonts/`.
+Library: SFML (Simple and Fast Multimedia Library) 
 
-## License
 
-This project is provided as-is for educational and personal use.
+IDE: Visual Studio
 
-## Notes
-
-- The game is designed to be cute and playful with soft colors and round shapes
-- All animations are frame-based and can be customized
-- The parallax system creates depth with multiple background layers
-- Sound effects enhance the playful atmosphere
-
-Enjoy your cute platformer game!
 
